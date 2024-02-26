@@ -20,6 +20,20 @@ body {
   grid: 1fr 2.5rem / 1fr max(20%, 19rem);
 }
 
+.signup-content {
+  background-color: #e5e7eb;
+  color: black;
+  width: 100%;
+  overflow: auto;
+  height: 100%;
+  display: grid;
+  grid: 1fr 2.5rem / 1fr;
+}
+
+.signup-container {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
 .menu {
   grid-area: 1 / 2 / 3 / 3;
   padding-top: 2.5rem;
@@ -112,4 +126,11 @@ body {
 .formError ul, .formError li {
   margin: 0;
   padding-top: 0.2rem;
+}
+
+.buttonHolder {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  justify-content: flex-start;
 }

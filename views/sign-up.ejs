@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <div class="signup-content">
+        <div class="signup-container">
+            <div class="contentCard">
+            <% if(errors && errors.length > 0)
+                {
+                if(errors.length > 1)
+                {
+                %>
+                <div class="formError">Something happened:
+                    <ul>
+                    <% for(error of errors) { %>
+                        <li><%= error.msg %></li>  
+                    <% } %>
+                    </ul>
+                </div>
+                <%
+                } else { %>
+                    <div class="formError"><%= errors[0].msg %></div>
+                <%
+                }
+                } %>
+            <form method="post" action="/sign-up">
+                <div class="formGroup">
+                    <label for="userName">User Name</label>
+                    <input type="text" placeholder="Your login credentials" name="username" id="userName" required />
+                </div>
+                <div class="formGroup">
+                    <label for="userFirstName">First Name</label>
+                    <input type="text" placeholder="Your name" name="user_first_name" id="userFirst Name" required />
+                </div>
+                <div class="formGroup">
+                    <label for="userLastName">Last Name</label>
+                    <input type="text" placeholder="Your last name" name="user_last_name" id="userLastName" />
+                </div>
+                <div class="formGroup">
+                    <label for="userPassword">Password</label>
+                    <input type="password" name="password" id="userPassword" required />
+                </div>
+                <div class="formGroup">
+                    <label for="userConfirmPassword">Confirm Password</label>
+                    <input type="password" name="confirm_password" id="userConfirmPassword" required />
+                </div>
+                <div class="formButtons">
+                <button type="submit" class="menuButton">Sign up</button>
+                </div>
+            </form>
+            </div>
+        </div>
+
+      <div class="section-footer">This site was made for The Odin Project</div>
+    </div>
+    </div>
+  </body>
+</html>
