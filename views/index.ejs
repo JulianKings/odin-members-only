@@ -1,67 +1,40 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <div class="content">
-      <div class="menu">
-        <div class="contentCard">
-          <%
-          if(user)
-          { %>
-            <p>Welcome back, <%= user.first_name %></p>
-            <div class="buttonHolder">
-              <% if(!user.membership_status) { %>
-              <button onclick="location.href='/join-membership';" type="button" class="menuButton">Join our membership</button>
-              <% }
-                if(!user.admin) { %>
-              <button onclick="location.href='/join-admin';" type="button" class="menuButton">Get Administrative Rights</button>
-              <% } %>
-            </div>
-            <%
-          } else {          
-            if(sessionMessage && sessionMessage.length > 0)
-              {
-                if(sessionMessage.length > 1)
-                {
-                %>
-                <div class="formError">Something happened:
-                  <ul>
-                    <% for(message of sessionMessage) { %>
-                      <li><%= message %></li>  
-                    <% } %>
-                  </ul>
-                </div>
-                <%
-                } else { %>
-                  <div class="formError"><%= sessionMessage[0] %></div>
-                <%
-                }
-              } %>
-            <form method="post" action="/log-in">
-              <div class="formGroup">
-                  <label for="userName">User Name </label>
-                  <input type="text" placeholder="Your login credentials" name="username" id="userName" required />
-              </div>
-              <div class="formGroup">
-                  <label for="userPassword">Password </label>
-                  <input type="password" name="password" id="userPassword" required />
-              </div>
-              <div class="formButtons">
-                <button type="submit" class="menuButton">Login</button>
-                <button onclick="location.href='/sign-up';" type="button" class="menuButton">Sign Up</button>
-              </div>
-            </form>
-          <% } %>
+<%- contentFor('layoutContent') %>
+<h1><%= title %></h1>
+<p>Welcome to <%= title %></p>
+<div class="messageHolder">
+<% if(user) { %>
+  <div class="contentCard">
+    <form method="post" action="/post-message">
+      <div class="formGroup">
+        <textarea cols="6" rows="6" id="postMessage" name="message" placeholder="Post your message here" required></textarea>
+      </div>
+      <div class="formButtons">
+        <button type="submit" class="menuButton">Send message</button>
+      </div>
+    </form>
+  </div>
+<% } %>
+<% if(messages && messages.length > 0)
+{
+  for(message of messages)
+  { %>
+    <div class="contentCard">
+      <div class="contentCardMessage">
+        <div class="messageHolder">
+          <%= message.message %>
+        </div>
+        <div class="deleteHolder"></div>
+        <div class="informationHolder">
+          <div class="authorHolder">
+            <% if(user && user.membership_status) { %>
+              <%= message.author.first_name %> <%= message.author.last_name %>              
+            <% } %>
+          </div>
+          <div class="timestamp"> <%= message.formatted_timestamp %></div>
         </div>
       </div>
-      <div class="section-content">
-        <h1><%= title %></h1>
-        <p>Welcome to <%= title %></p>
-      </div>
-      <div class="section-footer">This site was made for The Odin Project</div>
     </div>
-  </body>
-</html>
+  <%
+  }
+} %>
+</div>

@@ -1,17 +1,20 @@
 const User = require("../models/user");
+const Message = require("../models/message");
 
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 const bcrypt = require('bcryptjs');
 
-exports.home = function(req, res, next) {
-    res.render('index', { title: "Members Only", sessionMessage: req.session.messages, user: req.user });
+exports.home = asyncHandler(async (req, res, next) => {
+    const allMessages = await Message.find().sort({ timestamp: -1}).exec();
 
-};
+    res.render('index', { title: "Members Only", sessionMessage: req.session.messages, 
+        user: req.user, messages: allMessages });
+});
 
 exports.get_signup = function(req, res, next) {
-    res.render('sign-up', { title: "Sign Up", errors: undefined });
+    res.render('sign-up', { layout: false, title: "Sign Up", errors: undefined });
 };
 
 exports.post_signup = [
@@ -67,7 +70,7 @@ exports.post_signup = [
 
         if(!errors.isEmpty())
         {
-            res.render('sign-up', { title: "Sign Up", errors: errors.array() });
+            res.render('sign-up', { layout: false, title: "Sign Up", errors: errors.array() });
         } else {
             bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
                 if(err)
@@ -80,6 +83,38 @@ exports.post_signup = [
                 const result = await user.save();
                 res.redirect("/");
             });
+        }
+    }),
+]
+
+exports.post_message = [
+    body("message", "Message must not be empty.")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+        const user = req.user;
+
+        if(!user)
+        {
+            const err = new Error("Message's author not found");
+            err.status = 404;
+            return next(err);
+        }
+
+        const message = new Message({
+            message: req.body.message,
+            author: user._id,
+            timestamp: new Date()
+        })
+
+        if(!errors.isEmpty())
+        {
+            res.redirect("/");
+        } else {
+            const result = await message.save();
+            res.redirect("/");
         }
     }),
 ]

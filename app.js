@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var expressLayouts = require('express-ejs-layouts');
 require('dotenv').config();
 
 const session = require("express-session");
@@ -27,6 +28,8 @@ async function main() {
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+app.use(expressLayouts);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -95,7 +98,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', { title: "Error", user: undefined, sessionMessage: undefined });
 });
 
 module.exports = app;

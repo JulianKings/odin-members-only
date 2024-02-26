@@ -134,3 +134,26 @@ body {
   gap: 0.6rem;
   justify-content: flex-start;
 }
+
+.messageHolder {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.contentCardMessage
+{
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.informationHolder {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  font-size: 0.9rem;
+}
+
+.informationHolder .timestamp {
+  text-align: right;
+}

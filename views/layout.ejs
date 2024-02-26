@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <div class="content">
+      <div class="menu">
+        <div class="contentCard">
+          <%
+          if(user)
+          { %>
+            <p>Welcome back, <%= user.first_name %></p>
+            <div class="buttonHolder">
+              <% if(!user.membership_status) { %>
+              <button onclick="location.href='/join-membership';" type="button" class="menuButton">Join our membership</button>
+              <% }
+                if(!user.admin) { %>
+              <button onclick="location.href='/join-admin';" type="button" class="menuButton">Get Administrative Rights</button>
+              <% } %>
+            </div>
+            <%
+          } else {          
+            if(sessionMessage && sessionMessage.length > 0)
+              {
+                if(sessionMessage.length > 1)
+                {
+                %>
+                <div class="formError">Something happened:
+                  <ul>
+                    <% for(message of sessionMessage) { %>
+                      <li><%= message %></li>  
+                    <% } %>
+                  </ul>
+                </div>
+                <%
+                } else { %>
+                  <div class="formError"><%= sessionMessage[0] %></div>
+                <%
+                }
+              } %>
+            <form method="post" action="/log-in">
+              <div class="formGroup">
+                  <label for="userName">User Name </label>
+                  <input type="text" placeholder="Your login credentials" name="username" id="userName" required />
+              </div>
+              <div class="formGroup">
+                  <label for="userPassword">Password </label>
+                  <input type="password" name="password" id="userPassword" required />
+              </div>
+              <div class="formButtons">
+                <button type="submit" class="menuButton">Login</button>
+                <button onclick="location.href='/sign-up';" type="button" class="menuButton">Sign Up</button>
+              </div>
+            </form>
+          <% } %>
+        </div>
+      </div>
+      <div class="section-content">
+        <%- layoutContent %>
+      </div>
+      <div class="section-footer">This site was made for The Odin Project</div>
+    </div>
+  </body>
+</html>
