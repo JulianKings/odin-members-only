@@ -23,14 +23,22 @@
         <div class="messageHolder">
           <%= message.message %>
         </div>
-        <div class="deleteHolder"></div>
-        <div class="informationHolder">
+        <% if(user && user.admin) { %>
+          <div class="deleteHolder">
+              <button onclick="location.href='/messages/<%= message._id %>/delete';" type="button" class="menuButton">Delete message</button>
+          </div>
+        <% } %>
+        <hr class="splitter">
+        <div class="informationHolder<%= (user && user.membership_status) ? '' : '-noLogin' %>">
+          <% if(user && user.membership_status) { %>
           <div class="authorHolder">
-            <% if(user && user.membership_status) { %>
               <%= message.author.first_name %> <%= message.author.last_name %>              
-            <% } %>
+            
           </div>
           <div class="timestamp"> <%= message.formatted_timestamp %></div>
+          <% } else { %>
+            You need to <strong>be a member</strong> to know more information about this message 
+          <% } %>
         </div>
       </div>
     </div>

@@ -148,12 +148,51 @@ body {
   gap: 0.2rem;
 }
 
+.contentCardMessage .messageHolder
+{
+  padding-bottom: 0.5rem;
+}
+
+hr.splitter {
+  border: 1px solid black;
+  width: 100%;
+  opacity: 0.05;
+  padding: 0;
+  margin: 0 0.4rem;
+  align-self: center;
+}
+
+.deleteHolder {
+  font-size: 0.9rem;
+  padding-top: 0.5rem;
+}
+
+.deleteHolder .menuButton {
+  font-size: 0.9rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #1d2636;
+  color: white;
+  border: 1px solid #1d2636;
+  border-radius: 0.4rem;
+  transition: all 0.3s ease-in-out;
+}
+
 .informationHolder {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+}
+
+.informationHolder-noLogin {
+  font-size: 0.8rem;
+}
+
+.informationHolder .authorHolder {
+  font-weight: bold;
+  padding-left: 0.4rem;
 }
 
 .informationHolder .timestamp {
   text-align: right;
+  padding-right: 0.4rem;
 }

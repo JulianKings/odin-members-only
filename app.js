@@ -17,6 +17,9 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 
+app.set('join_secret_password', process.env.SECRET_PWD);
+app.set('admin_secret_password', process.env.ADMIN_SECRET_PWD);
+
 // Set up mongoose connection
 mongoose.set("strictQuery", false);
 
@@ -84,6 +87,15 @@ app.post(
     failureMessage: true
   })
 );
+
+app.get("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

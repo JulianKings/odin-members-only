@@ -7,7 +7,7 @@ const { body, validationResult } = require("express-validator");
 const bcrypt = require('bcryptjs');
 
 exports.home = asyncHandler(async (req, res, next) => {
-    const allMessages = await Message.find().sort({ timestamp: -1}).exec();
+    const allMessages = await Message.find().sort({ timestamp: -1}).populate("author").exec();
 
     res.render('index', { title: "Members Only", sessionMessage: req.session.messages, 
         user: req.user, messages: allMessages });
@@ -118,3 +118,127 @@ exports.post_message = [
         }
     }),
 ]
+
+exports.join_membership_get = asyncHandler(async (req, res, next) => {
+    const user = req.user;
+    if(!user)
+    {
+        res.redirect("/");
+    } else {
+        res.render('join_membership', { title: "Members Only", sessionMessage: req.session.messages, 
+            user: user, errors: undefined });
+    }
+});
+
+exports.join_membership_post = [
+    body("secret_password", "Secret password must not be empty.")
+        .trim()
+        .isLength({ min: 1 })
+        .escape()
+        .custom((value, { req }) => {
+            return (value === req.app.settings.join_secret_password);
+        })
+        .withMessage("Secret password is invalid."),
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+        const user = req.user;
+
+        if(!user)
+        {
+            res.redirect("/");
+        } else {
+            const updatedUser = new User({
+                username: user.username,
+                password: user.password,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                membership_status: true,
+                admin: user.admin,
+                _id: user._id
+            })
+
+            if(!errors.isEmpty())
+            {
+                res.render('join_membership', { title: "Members Only", sessionMessage: req.session.messages, 
+                    user: user, errors: errors.array() });
+            } else {
+                const result = await User.findByIdAndUpdate(user._id, updatedUser, {});
+                res.redirect("/");
+            }
+        }
+    }),
+]
+
+exports.join_admin_get = asyncHandler(async (req, res, next) => {
+    const user = req.user;
+    if(!user)
+    {
+        res.redirect("/");
+    } else {
+        res.render('admin_join', { title: "Members Only", sessionMessage: req.session.messages, 
+        user: user, errors: undefined });
+    }
+});
+
+exports.join_admin_post = [
+    body("secret_password", "Secret password must not be empty.")
+        .trim()
+        .isLength({ min: 1 })
+        .escape()
+        .custom((value, { req }) => {
+            return (value === req.app.settings.admin_secret_password);
+        })
+        .withMessage("Secret password is invalid."),
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+        const user = req.user;
+
+        if(!user)
+        {
+            res.redirect("/");
+        } else {
+            const updatedUser = new User({
+                username: user.username,
+                password: user.password,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                membership_status: user.membership_status,
+                admin: true,
+                _id: user._id
+            })
+
+            if(!errors.isEmpty())
+            {
+                res.render('admin_join', { title: "Members Only", sessionMessage: req.session.messages, 
+                    user: user, errors: errors.array() });
+            } else {
+                const result = await User.findByIdAndUpdate(user._id, updatedUser, {});
+                res.redirect("/");
+            }
+        }
+    }),
+]
+
+exports.messages_delete_get = asyncHandler(async (req, res, next) => {
+    const user = req.user;
+    if(!user)
+    {
+        res.redirect("/");
+    } else {
+        if(!user.admin)
+        {
+            res.redirect("/");
+        } else {
+            const message = await Message.findById(req.params.id);
+
+            if(!message)
+            {
+                res.redirect("/");
+            } else {
+                await Message.findByIdAndDelete(req.params.id);
+                res.redirect("/");
+            }
+
+        }
+    }
+});
